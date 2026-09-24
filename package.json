@@ -1,0 +1,30 @@
+{
+  "name": "screen-ops-bench",
+  "version": "1.0.0",
+  "description": "A screen-operation benchmark: web tasks in a Chrome window, judged by the final app state.",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc -p .",
+    "test": "vitest run",
+    "serve": "tsx server/server.ts",
+    "bench": "tsx harness/run.ts",
+    "summarize": "tsx harness/summarize.ts"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.1"
+  },
+  "private": true
+}
