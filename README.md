@@ -70,7 +70,7 @@ An interrupted bench resumes: a run already in the output file is skipped.
 
 **Do not run another Chrome while the bench runs**, not even headless. On 2026-09-24 a headless Chrome started for screenshots coincided with a stray "New Tab" window appearing in the bench's Chrome, and the harness then (before the guard above) sometimes gave agents that window. Those 53 runs are kept apart in `results/invalid/` and were run again.
 
-Run 2026-09-24/25: 4 models × 2 tool sets × 12 tasks × 3 reps = 288 runs, all one after another (3.6 hours of agent time). Full table: [`results/summary.md`](results/summary.md). Write-up: https://hooly.jp/arts-and-crafts/screen-ops-bench-2026-09
+Run 2026-09-24/25: 4 models × 2 tool sets × 12 tasks × 3 reps = 288 runs, all one after another (3.6 hours of agent time). Full table: [`results/summary.md`](results/summary.md). Write-up: https://hooly.jp/arts-and-crafts/screen-ops-bench-2026-09/
 
 | agent · tools | pass | false success | time s (median) | tokens/run (median) | USD/run |
 |---|---|---|---|---|---|
