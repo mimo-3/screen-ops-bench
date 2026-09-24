@@ -27,3 +27,12 @@ export function costUsd(model: string, u: Usage): number {
   if (!p) throw new Error(`no price for ${model}`);
   return (u.input * p.input + u.cacheRead * p.cacheRead + u.cacheWrite * p.cacheWrite + u.output * p.output) / 1e6;
 }
+
+/**
+ * Jev (TypeSafe AI), used inside cua-jev: input tokens only, output is not billed. TypeSafe's own
+ * price page could not be read; this is the figure several write-ups give (e.g.
+ * https://www.mindstudio.ai/blog/jev-pricing-cost-per-token). It is reported apart from the model cost.
+ */
+export const JEV_INPUT_PER_M = 0.042;
+
+export const jevCostUsd = (inputTokens: number) => (inputTokens * JEV_INPUT_PER_M) / 1e6;
