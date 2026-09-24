@@ -70,7 +70,26 @@ An interrupted bench resumes: a run already in the output file is skipped.
 
 **Do not run another Chrome while the bench runs**, not even headless. On 2026-09-24 a headless Chrome started for screenshots coincided with a stray "New Tab" window appearing in the bench's Chrome, and the harness then (before the guard above) sometimes gave agents that window. Those 53 runs are kept apart in `results/invalid/` and were run again.
 
-See [`results/summary.md`](results/summary.md) and the write-up linked there.
+Run 2026-09-24/25: 4 models × 2 tool sets × 12 tasks × 3 reps = 288 runs, all one after another (3.6 hours of agent time). Full table: [`results/summary.md`](results/summary.md). Write-up: https://hooly.jp/arts-and-crafts/screen-ops-bench-2026-09
+
+| agent · tools | pass | false success | time s (median) | tokens/run (median) | USD/run |
+|---|---|---|---|---|---|
+| Opus 5.5 · cua-jev | 36/36 | 0 | 30.3 | 67k | 0.098 |
+| Opus 5.5 · cua-driver | 36/36 | 0 | 26.3 | 428k | 0.567 |
+| GPT-6 Astra · cua-jev | 36/36 | 0 | 38.4 | 129k | 0.331 |
+| GPT-6 Astra · cua-driver | 36/36 | 0 | 50.2 | 281k | 0.727 |
+| GPT-6 Sol · cua-jev | 36/36 | 0 | 38.0 | 153k | 0.067 |
+| GPT-6 Sol · cua-driver | 36/36 | 0 | 52.4 | 388k | 0.179 |
+| GPT-6 Luna · cua-jev | 36/36 | 0 | 34.5 | 154k | 0.003 |
+| GPT-6 Luna · cua-driver | 31/36 | 0 | 34.9 | 434k | 0.011 |
+
+- The tasks turned out easy for these models: 283 of 288 runs passed, and all five failures were GPT-6 Luna with cua-driver (the slider three times, the notes text once, the country select once).
+- No run claimed success on a failure. Two Luna · cua-jev runs said `failure` on a task they had done.
+- The tool set moved cost more than the score: cua-driver runs read 2.2–6.4× the tokens (median per run) (the whole AX tree at every look) and cost 2.2–5.8× as much per run (mean).
+- One Sol · cua-driver run brought Chrome to the front for about 4 s (20 samples), after a `type_text` at window coordinates.
+- Jev, inside cua-jev: 1,190 calls, 4.4M input tokens, about $0.19 in all.
+
+Files: `runs.jsonl` (one record per run), `summary.{md,json}`, `report-data.json` (what the write-up plots), `meta.json` (versions), `raw-streams.tar.xz` (every agent's event stream), `pilot/` (the Opus · cua-jev pilot before three cua-jev fixes, not counted), `invalid/` (the 53 wrong-window runs, not counted).
 
 ## License
 

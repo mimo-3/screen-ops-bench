@@ -2,3 +2,4 @@ node_modules/
 dist/
 .work/
 results/raw/*.stream.jsonl
+results/raw/
