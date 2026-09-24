@@ -8,7 +8,7 @@
  * the model read or wrote (uncached input + cache reads + cache writes + output). Cost is computed
  * from the tokens with harness/prices.ts; Jev's usage is counted apart and is not in it.
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { jevCostUsd } from "./prices.js";
@@ -120,6 +120,15 @@ function main(): void {
   const overall = combos.map(([agent, tools]) => group(runs.filter((r) => r.agent === agent && r.tools === tools), { agent, tools }));
   const perTask = tasks.flatMap((task) => combos.map(([agent, tools]) => ({ agent, tools, task, rs: runs.filter((r) => r.agent === agent && r.tools === tools && r.task === task) }))).filter((x) => x.rs.length).map((x) => group(x.rs, x));
   writeFileSync(join(dirname(IN), "summary.json"), `${JSON.stringify({ generatedFrom: IN.replace(`${ROOT}/`, ""), runs: runs.length, overall, perTask }, null, 2)}\n`);
+  // Everything a write-up needs in one file: the summary, and each run slimmed to what is plotted.
+  const metaPath = join(dirname(IN), "meta.json");
+  const meta = existsSync(metaPath) ? JSON.parse(readFileSync(metaPath, "utf8")) : {};
+  const slim = runs.map((r) => ({
+    task: r.task, agent: r.agent, tools: r.tools, rep: r.rep, pass: r.pass, partial: round(r.checks.passed / r.checks.total), claimed: r.claimed,
+    sec: round(r.wallMs / 1000, 1), toolCalls: r.toolCalls, tokens: tokensOf(r), output: r.usage.output, costUsd: round(r.costUsd, 4),
+    jevCalls: r.jev.calls, timedOut: r.timedOut, focusSteals: r.focusSteals,
+  }));
+  writeFileSync(join(dirname(IN), "report-data.json"), `${JSON.stringify({ meta, overall, perTask, runs: slim })}\n`);
 
   const row = (g: Group) =>
     `| ${g.task ? `${g.task} · ` : ""}${g.agent} · ${g.tools} | ${g.passes}/${g.runs} (${Math.round(g.score * 100)}%) | ${Math.round(g.partial * 100)}% | ${g.falseSuccess}/${g.successClaims} | ${g.medianSec} | ${g.medianToolCalls} | ${(g.tokens.medianPerRun / 1000).toFixed(1)}k | ${(g.tokens.output / g.runs).toFixed(0)} | $${g.costUsd.meanPerRun.toFixed(3)} | $${g.costUsd.total.toFixed(2)} | ${g.jev.calls} | ${g.focusSteals} |`;
