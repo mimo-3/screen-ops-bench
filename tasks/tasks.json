@@ -1,0 +1,98 @@
+{
+  "note": "Each task's `expected` is the exact final state the page reports (every key compared by deep equality, nothing trimmed). A run passes only when every key matches. `checks` counts matching keys for partial credit.",
+  "tasks": [
+    {
+      "id": "signup-form",
+      "category": "form",
+      "skills": ["text entry", "native select", "radio", "checkbox", "submit once"],
+      "prompt": "Create an account for Grace Hopper with the email grace@navy.mil, country Germany and the Pro plan. Agree to the terms and submit the form exactly once.",
+      "expected": {
+        "name": "Grace Hopper",
+        "email": "grace@navy.mil",
+        "country": "Germany",
+        "plan": "Pro",
+        "agreed": true,
+        "submissions": [{ "name": "Grace Hopper", "email": "grace@navy.mil", "country": "Germany", "plan": "Pro", "agreed": true }]
+      }
+    },
+    {
+      "id": "notes-append",
+      "category": "text",
+      "skills": ["append to text area", "exact multi-line text", "save", "avoid the search field"],
+      "prompt": "Add a new line \"2. Hiring\" at the end of the notes, so that they read exactly the JSON string \"Agenda:\\n1. Budget\\n2. Hiring\", then save the notes once. Do not type anything into the search field.",
+      "expected": { "search": "", "draft": "Agenda:\n1. Budget\n2. Hiring", "saved": "Agenda:\n1. Budget\n2. Hiring", "saves": 1 }
+    },
+    {
+      "id": "cart-coupon",
+      "category": "commerce",
+      "skills": ["stepper", "remove a row", "coupon"],
+      "prompt": "In the cart, set the quantity of Blue Mug to 3, remove Paper Notebook from the cart, and apply the coupon code SAVE10. Leave Desk Lamp as it is.",
+      "expected": { "items": [{ "name": "Blue Mug", "qty": 3 }, { "name": "Desk Lamp", "qty": 1 }], "coupon": "SAVE10", "total": 72.9 }
+    },
+    {
+      "id": "invoice-paid",
+      "category": "table",
+      "skills": ["row action", "look-alike rows"],
+      "prompt": "Mark invoice INV-1043 as paid. Do not change any other invoice.",
+      "expected": {
+        "statuses": { "INV-1031": "Paid", "INV-1034": "Unpaid", "INV-1038": "Unpaid", "INV-1040": "Paid", "INV-1043": "Paid", "INV-1044": "Unpaid", "INV-1047": "Overdue", "INV-1049": "Unpaid" }
+      }
+    },
+    {
+      "id": "contact-star",
+      "category": "list",
+      "skills": ["search", "toggle in a filtered list", "look-alike names", "clean up"],
+      "prompt": "Star the contact Hanako Yamada (there are two Yamadas; star only Hanako). Keep the contacts that are already starred. When you are done, the search box must be empty.",
+      "expected": { "search": "", "starred": ["Grace Hopper", "Hanako Yamada"] }
+    },
+    {
+      "id": "delete-draft",
+      "category": "dialog",
+      "skills": ["destructive action on request", "confirm dialog", "look-alike names"],
+      "prompt": "Delete the draft named exactly \"Q3 plan\" and confirm the deletion. Keep every other draft, including \"Q3 plan (old)\".",
+      "expected": { "drafts": ["Q3 plan (old)", "Hiring memo", "Offsite agenda", "Q4 plan"], "dialogOpen": false }
+    },
+    {
+      "id": "todo-reorder",
+      "category": "list",
+      "skills": ["ordering", "repeated action"],
+      "prompt": "Move \"Write report\" to the top of the list. The other items must keep their order.",
+      "expected": { "todos": ["Write report", "Buy milk", "Call Alice", "Book flights", "Water plants"] }
+    },
+    {
+      "id": "settings-tabs",
+      "category": "settings",
+      "skills": ["tabs", "switches", "save"],
+      "prompt": "In the Notifications settings, turn off Email digest and turn on Push notifications, then save the settings. Change nothing else.",
+      "expected": { "saved": { "emailDigest": false, "push": true, "sms": false, "darkMode": false, "shareUsage": true }, "unsaved": false }
+    },
+    {
+      "id": "wizard-team",
+      "category": "wizard",
+      "skills": ["multi-step flow", "stepper", "segmented control", "confirm once"],
+      "prompt": "Upgrade to the Team plan with 5 seats, billed annually, and confirm the order exactly once.",
+      "expected": { "orders": [{ "plan": "Team", "seats": 5, "billing": "annual" }], "step": 3 }
+    },
+    {
+      "id": "date-picker",
+      "category": "widget",
+      "skills": ["popover", "month navigation", "calendar grid"],
+      "prompt": "Set the delivery date to 15 October 2026 with the date picker and apply it.",
+      "expected": { "applied": "2026-10-15", "open": false }
+    },
+    {
+      "id": "volume-slider",
+      "category": "widget",
+      "skills": ["slider"],
+      "prompt": "Set the Volume slider to 30. Do not change Bass.",
+      "expected": { "volume": 30, "bass": 50 }
+    },
+    {
+      "id": "nested-menu",
+      "category": "menu",
+      "skills": ["menu button", "submenu", "avoid a neighbouring item"],
+      "prompt": "Export the report as CSV from the More actions menu, once. Do not archive the report.",
+      "expected": { "exports": ["CSV"], "archived": false, "menuOpen": false }
+    }
+  ]
+}
