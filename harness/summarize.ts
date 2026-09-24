@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { jevCostUsd } from "./prices.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -54,7 +55,7 @@ export interface Group {
   medianToolCalls: number;
   tokens: { total: number; meanPerRun: number; medianPerRun: number; output: number; uncachedInput: number; cacheRead: number; cacheWrite: number };
   costUsd: { total: number; meanPerRun: number; perSuccess: number | null };
-  jev: { calls: number; inputTokens: number };
+  jev: { calls: number; inputTokens: number; costUsd: number };
   focusSteals: number;
   timeouts: number;
   errors: number;
@@ -105,7 +106,7 @@ export function group(rs: RunRecord[], key: { agent: string; tools: string; task
       cacheWrite: sum(rs.map((r) => r.usage.cacheWrite)),
     },
     costUsd: { total: round(cost, 4), meanPerRun: round(cost / rs.length, 4), perSuccess: passes ? round(cost / passes, 4) : null },
-    jev: { calls: sum(rs.map((r) => r.jev.calls)), inputTokens: sum(rs.map((r) => r.jev.inputTokens)) },
+    jev: { calls: sum(rs.map((r) => r.jev.calls)), inputTokens: sum(rs.map((r) => r.jev.inputTokens)), costUsd: round(jevCostUsd(sum(rs.map((r) => r.jev.inputTokens))), 4) },
     focusSteals: sum(rs.map((r) => r.focusSteals)),
     timeouts: rs.filter((r) => r.timedOut).length,
     errors: rs.filter((r) => r.error).length,
