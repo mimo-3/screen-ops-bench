@@ -39,7 +39,7 @@ The page reports its whole model after every change ([`app/report.ts`](app/repor
 ## How a run works
 
 1. The harness starts the app server and, once per session, a Chrome window in app mode with its own profile (`--user-data-dir=.work/chrome-profile`, `--force-renderer-accessibility`). The user's own Chrome is never touched. Launching raises Chrome once; the front is handed back to the previous app before any run.
-2. For each run it points the page at the task through `/api/control`. The page loads the task with fresh state, so no run sees another's leftovers.
+2. For each run it points the page at the task through `/api/control`. The page loads the task with fresh state, so no run sees another's leftovers. The run starts only when the bench's Chrome shows exactly one window and its title is the task's `title`; a stray tab or window restarts Chrome first. Each record keeps the window id given and the window titles left at the end.
 3. The agent runs headless with the same prompt: the target pid and window id, "work in the background", the task, and a final `RESULT: success|failure` line.
 4. The judge reads the page's last reported state. Each record goes to `results/runs.jsonl`, and each agent's event stream to `results/raw/`.
 
@@ -67,6 +67,8 @@ npm run serve -- date-picker       # look at one task in a browser
 An interrupted bench resumes: a run already in the output file is skipped.
 
 ## Results
+
+**Do not run another Chrome while the bench runs**, not even headless. On 2026-09-24 a headless Chrome started for screenshots coincided with a stray "New Tab" window appearing in the bench's Chrome, and the harness then (before the guard above) sometimes gave agents that window. Those 53 runs are kept apart in `results/invalid/` and were run again.
 
 See [`results/summary.md`](results/summary.md) and the write-up linked there.
 
