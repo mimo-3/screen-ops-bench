@@ -1,0 +1,29 @@
+{
+  "startedAt": "2026-09-24T14:41:25Z",
+  "cuaJev": {
+    "commit": "57f087f",
+    "branch": "fix/remaining-tasks"
+  },
+  "cuaDriver": "cua-driver 0.8.3",
+  "claudeCode": "2.1.281 (Claude Code)",
+  "codex": "codex-cli 0.156.1",
+  "chrome": "Google Chrome 153.0.8010.53",
+  "macos": "26.6.2",
+  "node": "v24.14.1",
+  "bench": "78bc553",
+  "plan": {
+    "reps": 3,
+    "agents": [
+      "opus-5.5",
+      "gpt-6-astra",
+      "gpt-6-sol",
+      "gpt-6-luna"
+    ],
+    "tools": [
+      "cua-jev",
+      "cua-driver"
+    ],
+    "tasks": 12,
+    "timeoutMin": 15
+  }
+}
