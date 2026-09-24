@@ -34,6 +34,8 @@ export const AGENTS: AgentSpec[] = [
 
 interface Task {
   id: string;
+  /** The page's document title, which is also its window title. */
+  title: string;
   category: string;
   prompt: string;
   expected: Record<string, unknown>;
@@ -125,22 +127,36 @@ async function ensureChrome(url: string): Promise<number> {
   throw new Error("Chrome did not start");
 }
 
-/** Points the page at the task and waits until it has mounted and its window shows the task. */
+type Win = { window_id: number; title?: string; is_on_screen?: boolean };
+const windowsOf = async (pid: number) => ((await driverCall<{ windows?: Win[] }>("list_windows", { pid })).windows ?? []).filter((w) => w.is_on_screen !== false && (w.title ?? "") !== "");
+
+/** Points the page at the task and waits until its window, and only that one, shows the task's title. */
 async function loadTask(srv: BenchServer, pid: number, task: Task, runId: string): Promise<{ windowId: number; initial: unknown }> {
   srv.setControl({ task: task.id, run: runId });
   for (let i = 0; i < 120; i++) {
-    const st = srv.state(runId);
-    if (st) {
-      const wins = (await driverCall<{ windows?: Array<{ window_id: number; title?: string; is_on_screen?: boolean }> }>("list_windows", { pid })).windows ?? [];
-      const win = wins.find((w) => w.is_on_screen !== false && (w.title ?? "") !== "" && !/Waiting/.test(w.title ?? "") && w.title !== "Screen Ops Bench");
-      if (win) {
+    if (srv.state(runId)) {
+      const wins = await windowsOf(pid);
+      const win = wins.find((w) => w.title === task.title);
+      if (win && wins.length === 1) {
         await pause(400);
         return { windowId: win.window_id, initial: srv.state(runId)!.state };
       }
     }
     await pause(250);
   }
-  throw new Error(`task ${task.id} did not load`);
+  throw new Error(`task ${task.id} did not load in a single window titled "${task.title}"`);
+}
+
+/** The bench's Chrome must show exactly one window; anything else (a stray new tab or window) means a fresh start. */
+async function ensureSingleWindow(srv: BenchServer): Promise<number> {
+  let pid = await ensureChrome(srv.url);
+  if ((await windowsOf(pid)).length > 1) {
+    process.stderr.write("the bench's Chrome has more than one window: restarting it\n");
+    await run("kill", [String(pid)]).catch(() => undefined);
+    for (let i = 0; i < 40 && (await chromePid()); i++) await pause(250);
+    pid = await ensureChrome(srv.url);
+  }
+  return pid;
 }
 
 function promptFor(task: Task, pid: number, windowId: number): string {
@@ -207,7 +223,7 @@ async function main(): Promise<void> {
               process.stderr.write("the screen is locked: waiting\n");
               await pause(30_000);
             }
-            const pid = await ensureChrome(srv.url);
+            const pid = await ensureSingleWindow(srv);
             const runId = `${new Date().toISOString().replace(/[:.]/g, "-")}-${agent.label}-${tools}-${task.id}`;
             const { windowId, initial } = await loadTask(srv, pid, task, runId);
             if (judge(task.expected, initial).pass) throw new Error(`${task.id}: the initial state already passes`);
@@ -218,6 +234,7 @@ async function main(): Promise<void> {
             const a = await runAgent(agent, tools, promptFor(task, pid, windowId), WORK, join(RAW, `${runId}.stream.jsonl`), timeoutMs);
             const wallMs = Date.now() - t0;
             const steals = await watch.stop();
+            const windowsAfter = (await windowsOf(pid)).map((w) => w.title ?? "");
             await pause(500); // the page's last report is in flight
             const final = srv.state(runId)?.state;
             const v = judge(task.expected, final);
@@ -228,7 +245,7 @@ async function main(): Promise<void> {
               claimed, falseSuccess: claimed === "success" && !v.pass,
               toolCalls: a.toolCalls, toolNames: a.toolNames, otherTools: a.otherTools,
               wallMs, usage: a.usage, costUsd: costUsd(agent.model, a.usage), reportedCostUsd: a.reportedCostUsd,
-              jev: a.jev, focusSteals: steals, startedInBackground: background, timedOut: a.timedOut, exitCode: a.exitCode, error: a.error,
+              jev: a.jev, focusSteals: steals, startedInBackground: background, windowId, windowsAfter, timedOut: a.timedOut, exitCode: a.exitCode, error: a.error,
             };
             appendFileSync(OUT, `${JSON.stringify(record)}\n`);
             process.stderr.write(`[${n}/${total}] ${task.id} ${agent.label} ${tools} rep ${rep}: ${v.pass ? "PASS" : "FAIL"} claimed=${claimed} tools=${a.toolCalls} ${Math.round(wallMs / 1000)}s $${record.costUsd.toFixed(3)}${a.error ? ` error=${a.error.slice(0, 120)}` : ""}\n`);
