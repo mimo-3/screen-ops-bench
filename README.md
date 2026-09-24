@@ -45,7 +45,7 @@ The page reports its whole model after every change ([`app/report.ts`](app/repor
 
 Harness settings:
 
-- **Claude Code**: `claude -p --model claude-opus-5-5 --tools "" --strict-mcp-config` with only the one MCP server allowed. Default effort.
+- **Claude Code**: `claude -p --model claude-opus-5-5 --tools "" --strict-mcp-config --setting-sources ""` with only the one MCP server allowed: no built-in tools, and no user or project settings (no CLAUDE.md, hooks or plugins). Default effort, and none of the calling session's `CLAUDE_*` environment.
 - **Codex**: `codex exec --json --ephemeral -m <model>` in its own `CODEX_HOME` (the user's login, nothing else), `model_reasoning_effort = "medium"`, read-only sandbox, `approval_policy = "never"`, web search off, and the shell, plugins, apps, computer use, browser and sub-agents turned off. Codex reaches MCP tools through its code-mode host, which stays on; no shell command is available.
 - **cua-driver** as the MCP server: `bring_to_front`, `move_cursor`, `kill_app`, `launch_app`, `get_desktop_state` and a few others are denied.
 - Runs are one at a time (one desktop). A run is stopped after 15 minutes and fails. While the screen is locked, the bench waits; `caffeinate` keeps the display awake meanwhile.
