@@ -1,6 +1,6 @@
 /**
  * The agents under test, run headless with nothing but one MCP server for the screen:
- *   claude: `claude -p` (Claude Code), built-in tools off (`--tools ""`).
+ *   claude: `claude -p` (Claude Code), built-in tools off (`--tools ""`), no user or project settings.
  *   codex:  `codex exec` in its own CODEX_HOME, shell and plugins off, read-only sandbox.
  * Both stream JSON events; each run's stream is kept under results/raw.
  */
@@ -96,9 +96,11 @@ function claudeCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: st
     "--output-format", "stream-json",
     "--verbose",
     "--no-session-persistence",
+    // No user or project settings: no CLAUDE.md, hooks or plugins of whoever runs the bench.
+    "--setting-sources", "",
   ];
-  const env = { ...process.env };
-  delete env.CLAUDECODE;
+  // Nothing of a Claude Code session running the bench (its effort level, session, sockets) leaks in.
+  const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(CLAUDECODE|CLAUDE_CODE_|CLAUDE_EFFORT|CLAUDE_PID)/.test(k)));
   return { cmd: "claude", argv, env };
 }
 
