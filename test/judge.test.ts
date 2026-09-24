@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { deepEqual, judge } from "../harness/judge.js";
 import { wilson } from "../harness/summarize.js";
 
-const tasks = (JSON.parse(readFileSync(new URL("../tasks/tasks.json", import.meta.url), "utf8")) as { tasks: Array<{ id: string; expected: Record<string, unknown> }> }).tasks;
+const tasks = (JSON.parse(readFileSync(new URL("../tasks/tasks.json", import.meta.url), "utf8")) as { tasks: Array<{ id: string; title: string; expected: Record<string, unknown> }> }).tasks;
+const appIndex = readFileSync(new URL("../app/tasks/index.ts", import.meta.url), "utf8");
 
 describe("judge", () => {
   it("passes only on exact equality of every expected key", () => {
@@ -25,6 +26,10 @@ describe("judge", () => {
   it("has a unique id and a non-empty expected state for every task", () => {
     expect(new Set(tasks.map((t) => t.id)).size).toBe(tasks.length);
     for (const t of tasks) expect(Object.keys(t.expected).length).toBeGreaterThan(0);
+  });
+
+  it("gives every task the same window title as its page, so the harness can find its window", () => {
+    for (const t of tasks) expect(appIndex).toContain(`"${t.id}": { title: "${t.title}"`);
   });
 });
 
