@@ -1,0 +1,24 @@
+{
+  "startedAt": "2026-09-25T05:23:38Z",
+  "suite": "hard",
+  "cuaJev": {
+    "commit": "ab41474",
+    "branch": "fix/remaining-tasks",
+    "frozen": "built and frozen at ab41474 before the Hard tasks were written; not changed during or after the bench"
+  },
+  "cuaDriver": "cua-driver 0.8.3",
+  "claudeCode": "2.1.282 (Claude Code)",
+  "codex": "codex-cli 0.156.1",
+  "chrome": "Google Chrome 153.0.8010.53",
+  "macos": "26.6.2",
+  "node": "v24.14.1",
+  "bench": "d13a96f",
+  "pilot": "results/hard-pilot: opus-5.5 x cua-driver x 16 tasks x 1 rep, 16/16 passed",
+  "plan": {
+    "reps": 3,
+    "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
+    "tools": ["cua-jev", "cua-driver"],
+    "tasks": 16,
+    "timeoutMin": 15
+  }
+}
