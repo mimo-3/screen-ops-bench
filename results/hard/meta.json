@@ -15,7 +15,7 @@
   "bench": "d13a96f",
   "pilot": "results/hard-pilot: opus-5.5 x cua-driver x 16 tasks x 1 rep, 16/16 passed",
   "plan": {
-    "reps": 3,
+    "reps": 2,
     "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
     "tools": ["cua-jev", "cua-driver"],
     "tasks": 16,
