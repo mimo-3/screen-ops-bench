@@ -1,0 +1,160 @@
+{
+  "tasks": [
+    {
+      "id": "profile-tabs-save",
+      "title": "Member profile",
+      "category": "settings",
+      "skills": [
+        "tabs",
+        "replace prefilled text",
+        "clear a field",
+        "switches",
+        "save each tab"
+      ],
+      "traps": [
+        "Save changes only saves the tab that is open",
+        "prefilled display name, job title and phone must be replaced, not appended to",
+        "secondary email must be emptied",
+        "default-on product and partner switches",
+        "Discard changes sits next to Save",
+        "exact punctuation and spacing in names"
+      ],
+      "prompt": "Update the member profile. Set the display name to exactly \"J. R. Okafor\" and the job title to exactly \"Staff Engineer, Payments\" (keep the pronouns as they are). In Contact, change the phone number to exactly \"+1 415 555 0142\" and remove the secondary email so that field is empty; keep the work email. In Notifications, turn Weekly digest on and turn Product announcements and Partner offers off, leaving Mentions on. Make sure all of these changes are saved.",
+      "expected": {
+        "saved": {
+          "personal": {
+            "displayName": "J. R. Okafor",
+            "jobTitle": "Staff Engineer, Payments",
+            "pronouns": "they/them"
+          },
+          "contact": {
+            "workEmail": "jr.okafor@acme.test",
+            "secondaryEmail": "",
+            "phone": "+1 415 555 0142"
+          },
+          "notifications": {
+            "mentions": true,
+            "weeklyDigest": true,
+            "productAnnouncements": false,
+            "partnerOffers": false
+          }
+        },
+        "unsavedTabs": []
+      }
+    },
+    {
+      "id": "project-delete-confirm",
+      "title": "Project admin",
+      "category": "admin",
+      "skills": [
+        "find a row in a long table",
+        "type-to-confirm",
+        "uncheck a default-on option",
+        "dismiss an interrupting dialog",
+        "archive"
+      ],
+      "traps": [
+        "look-alike project names (mobile-app, mobile-app-legacy-v2, mobile-api-legacy, web-dashboard-old-2)",
+        "Delete sits right next to Archive",
+        "repository deletion checkbox is on by default",
+        "a session-expiry dialog appears 1.5 s after the delete dialog opens, steals focus and must be answered",
+        "Sign out is the neighbour of Stay signed in",
+        "confirm button stays disabled until the name is typed exactly"
+      ],
+      "prompt": "In the project list, permanently delete the project mobile-app-legacy but keep its GitHub repository, and archive (do not delete) the project web-dashboard-old. Leave every other project as it is and stay signed in.",
+      "expected": {
+        "projects": {
+          "web-dashboard": "active",
+          "mobile-app": "active",
+          "auth-service": "active",
+          "mobile-app-legacy-v2": "active",
+          "billing-api": "active",
+          "web-dashboard-old-2": "active",
+          "data-pipeline": "active",
+          "marketing-site": "active",
+          "mobile-api-legacy": "active",
+          "docs-site": "active",
+          "mobile-app-legacy": "deleted",
+          "search-indexer": "active",
+          "web-dashboard-old": "archived",
+          "status-page": "active"
+        },
+        "repositoriesDeleted": [],
+        "deleteDialog": null,
+        "sessionPrompt": "done",
+        "signedOut": false
+      }
+    },
+    {
+      "id": "checkout-country-reset",
+      "title": "Order checkout",
+      "category": "commerce",
+      "skills": [
+        "native select",
+        "dependent select",
+        "radio",
+        "checkboxes",
+        "replace prefilled text",
+        "submit once"
+      ],
+      "traps": [
+        "changing the country silently resets shipping speed to Standard",
+        "changing the country silently turns shipping protection back on",
+        "Express is preselected before the country change",
+        "three add-ons are opted in by default",
+        "prefilled US street and ZIP must be replaced",
+        "Place order is disabled until the postal code matches the country's format"
+      ],
+      "prompt": "Change this order to ship to Canada: street address \"120 Bremner Blvd, Unit 4\", province Ontario, postal code \"M5V 3L9\", keeping the name Maya Chen. Use Express shipping. Do not add shipping protection, do not save the address for next time, and do not sign up for deal emails. Then place the order exactly once.",
+      "expected": {
+        "orders": [
+          {
+            "name": "Maya Chen",
+            "street": "120 Bremner Blvd, Unit 4",
+            "country": "Canada",
+            "region": "Ontario",
+            "postalCode": "M5V 3L9",
+            "speed": "Express",
+            "protection": false,
+            "saveAddress": false,
+            "marketing": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "vacation-responder",
+      "title": "Vacation responder",
+      "category": "text",
+      "skills": [
+        "switch",
+        "replace prefilled dates",
+        "exact text entry",
+        "checkbox",
+        "dismiss an interrupting dialog",
+        "save"
+      ],
+      "traps": [
+        "prefilled dates, subject and message from an old trip",
+        "subject case differs (Office vs office)",
+        "smart punctuation (on by default) rewrites apostrophes to curly ones as you type",
+        "reply to outside senders is on by default",
+        "an AI-replies upsell dialog appears 1.5 s after the first edit and swallows keystrokes",
+        "Save stays disabled while the dates are invalid or in the past"
+      ],
+      "prompt": "Set up my vacation responder: turn automatic replies on for 2026-09-28 through 2026-10-06. The subject must be exactly \"Out of office: back Oct 7\" and the message exactly \"Hi! I'm away until October 6 and won't check email. For urgent issues, contact Priya at priya@acme.test.\" with plain straight apostrophes. Only reply to people inside Acme. Don't turn on any AI features. Save it.",
+      "expected": {
+        "saved": {
+          "enabled": true,
+          "firstDay": "2026-09-28",
+          "lastDay": "2026-10-06",
+          "subject": "Out of office: back Oct 7",
+          "message": "Hi! I'm away until October 6 and won't check email. For urgent issues, contact Priya at priya@acme.test.",
+          "replyOutside": false
+        },
+        "unsaved": false,
+        "aiReplies": false
+      }
+    }
+  ]
+}
