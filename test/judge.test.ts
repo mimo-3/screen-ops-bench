@@ -1,10 +1,12 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { deepEqual, judge } from "../harness/judge.js";
 import { wilson } from "../harness/summarize.js";
+import { loadTasks } from "../harness/tasks.js";
 
-const tasks = (JSON.parse(readFileSync(new URL("../tasks/tasks.json", import.meta.url), "utf8")) as { tasks: Array<{ id: string; title: string; expected: Record<string, unknown> }> }).tasks;
-const appIndex = readFileSync(new URL("../app/tasks/index.ts", import.meta.url), "utf8");
+const tasks = loadTasks();
+const hardDir = new URL("../app/tasks/hard/", import.meta.url);
+const pages = [new URL("../app/tasks/index.ts", import.meta.url), ...readdirSync(hardDir).filter((f) => f.endsWith(".tsx")).map((f) => new URL(f, hardDir))].map((u) => readFileSync(u, "utf8")).join("\n");
 
 describe("judge", () => {
   it("passes only on exact equality of every expected key", () => {
@@ -23,13 +25,14 @@ describe("judge", () => {
     expect(deepEqual({ x: 1 }, { x: 1, y: undefined })).toBe(false);
   });
 
-  it("has a unique id and a non-empty expected state for every task", () => {
+  it("has a unique id, a unique title and a non-empty expected state for every task", () => {
     expect(new Set(tasks.map((t) => t.id)).size).toBe(tasks.length);
+    expect(new Set(tasks.map((t) => t.title)).size).toBe(tasks.length);
     for (const t of tasks) expect(Object.keys(t.expected).length).toBeGreaterThan(0);
   });
 
   it("gives every task the same window title as its page, so the harness can find its window", () => {
-    for (const t of tasks) expect(appIndex).toContain(`"${t.id}": { title: "${t.title}"`);
+    for (const t of tasks) expect(pages).toContain(`"${t.id}": { title: "${t.title}"`);
   });
 });
 
