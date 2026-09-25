@@ -1,0 +1,97 @@
+{
+  "tasks": [
+    {
+      "id": "pr-reviewers",
+      "title": "Pull request #482",
+      "category": "combobox",
+      "skills": ["ARIA combobox", "delayed suggestions", "token input", "remove a token", "submit once"],
+      "traps": [
+        "suggestions arrive only after a delay",
+        "two people named Sam Rivera and two named Jordan Lee (plus Jordan Leeds), told apart only by team and handle",
+        "the first suggestion is pre-highlighted, so typing a name and pressing Enter picks the wrong person",
+        "Alex Kim and Alex Kimura are both reviewers; only one must go",
+        "Backspace in the empty field removes the last reviewer",
+        "the request must be sent once, after the list is final"
+      ],
+      "prompt": "On this pull request, change the reviewers: remove Alex Kim (@akim) but keep Alex Kimura and Dana Wu, and add Sam Rivera from the Platform team and Jordan Lee from the Security team. Then click Request review exactly once.",
+      "expected": {
+        "reviewers": ["akimura", "dwu", "jlee", "sam-rivera"],
+        "requests": [["akimura", "dwu", "jlee", "sam-rivera"]]
+      }
+    },
+    {
+      "id": "roadmap-board",
+      "title": "Q4 roadmap",
+      "category": "dragdrop",
+      "skills": ["drag and drop between columns", "keyboard drag alternative", "ordering within a column", "WIP limit"],
+      "traps": [
+        "the first requested move (SSO login into In progress) is rejected by the WIP limit of 3, so the moves must be reordered",
+        "Billing export and Billing export v2 look alike",
+        "exact position inside the target column matters (top / bottom / above)",
+        "a picked-up card must be dropped, not left grabbed",
+        "keyboard moves across columns keep the row index, so extra arrow presses are needed"
+      ],
+      "prompt": "On the Q4 roadmap board: put \"SSO login\" at the very top of In progress; move \"Audit log search\" to Review, below \"Onboarding checklist\"; move \"Billing export v2\" to Done as the last card; and in Backlog put \"Webhook retries\" directly above \"Dark mode polish\". Leave every other card where it is.",
+      "expected": {
+        "columns": {
+          "backlog": ["Billing export", "Webhook retries", "Dark mode polish"],
+          "progress": ["SSO login", "Mobile push"],
+          "review": ["Onboarding checklist", "Audit log search"],
+          "done": ["Usage dashboard", "CSV import", "Billing export v2"]
+        },
+        "grabbed": null
+      }
+    },
+    {
+      "id": "contract-files",
+      "title": "Team drive",
+      "category": "tree",
+      "skills": ["tree view expansion", "lazy-loaded children", "context menu (right click or Shift+F10)", "inline rename", "star", "trash"],
+      "traps": [
+        "folders load their children after a delay",
+        "the same file names exist in Northwind 2025, Northwind 2026 and Northwind Traders 2026",
+        "rename pre-selects only the name without the extension, so typing the full name doubles the extension",
+        "Delete forever sits next to Move to trash",
+        "Make a copy creates a stray file",
+        "an existing star in 2025 must be kept"
+      ],
+      "prompt": "In the team drive, open the folder Clients › Northwind › 2026 › Contracts (not Northwind Traders, not 2025). There, rename \"Draft SOW.docx\" to exactly \"SOW-04.docx\", star \"SOW-03.pdf\", and move \"MSA-signed.pdf\" to the trash (not delete forever). Don't change anything else.",
+      "expected": {
+        "files": [
+          "Clients/Northwind Traders/2026/Contracts/Draft SOW.docx",
+          "Clients/Northwind Traders/2026/Contracts/MSA-signed.pdf",
+          "Clients/Northwind Traders/2026/Contracts/SOW-03.pdf",
+          "Clients/Northwind/2025/Contracts/MSA-signed.pdf",
+          "Clients/Northwind/2025/Contracts/SOW-01.pdf",
+          "Clients/Northwind/2025/Contracts/SOW-02.pdf",
+          "Clients/Northwind/2026/Contracts/SOW-03.pdf",
+          "Clients/Northwind/2026/Contracts/SOW-04.docx",
+          "Clients/Northwind/2026/Invoices/INV-2026-001.pdf",
+          "Internal/Handbook.pdf",
+          "Internal/Templates/SOW template.docx"
+        ],
+        "starred": ["Clients/Northwind/2025/Contracts/SOW-02.pdf", "Clients/Northwind/2026/Contracts/SOW-03.pdf"],
+        "trash": ["Clients/Northwind/2026/Contracts/MSA-signed.pdf"],
+        "deletedForever": []
+      }
+    },
+    {
+      "id": "studio-booking",
+      "title": "Studio booking",
+      "category": "picker",
+      "skills": ["custom listbox", "date range picker", "month navigation", "time picker", "submit once"],
+      "traps": [
+        "the form is prefilled from a previous booking with the look-alike Studio B Annex",
+        "the calendar opens on September and weeks start on Monday",
+        "with a complete range selected, the next click starts a new range",
+        "12:30 AM and 12:30 PM both exist in a long scrolling time list",
+        "an end time before the start time is rejected",
+        "the booking must be made once, with every field right"
+      ],
+      "prompt": "Book Studio B (the one on floor 3, not the Annex) from Monday, October 12, 2026 through Friday, October 16, 2026, from 8:30 AM to 12:30 PM (noon-thirty). Make the booking exactly once.",
+      "expected": {
+        "bookings": [{ "room": "Studio B", "start": "2026-10-12", "end": "2026-10-16", "from": "08:30", "to": "12:30" }]
+      }
+    }
+  ]
+}
