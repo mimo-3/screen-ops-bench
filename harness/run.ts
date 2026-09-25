@@ -152,11 +152,12 @@ async function loadTask(srv: BenchServer, pid: number, task: Task, runId: string
   throw new Error(`task ${task.id} did not load in a single window titled "${task.title}"`);
 }
 
-/** The bench's Chrome must show exactly one window; anything else (a stray new tab or window) means a fresh start. */
+/** The bench's Chrome must show exactly one window; anything else (a stray new tab or window, or none left) means a fresh start. */
 async function ensureSingleWindow(srv: BenchServer): Promise<number> {
   let pid = await ensureChrome(srv.url);
-  if ((await windowsOf(pid)).length > 1) {
-    process.stderr.write("the bench's Chrome has more than one window: restarting it\n");
+  const shown = (await windowsOf(pid)).length;
+  if (shown !== 1) {
+    process.stderr.write(`the bench's Chrome shows ${shown} windows: restarting it\n`);
     await run("kill", [String(pid)]).catch(() => undefined);
     for (let i = 0; i < 40 && (await chromePid()); i++) await pause(250);
     pid = await ensureChrome(srv.url);
@@ -349,8 +350,10 @@ async function bench(srv: BenchServer): Promise<void> {
           for (let attempt = 1; ; attempt++) {
             const { record, interfered } = await runOnce(srv, task, agent, tools, rep);
             await pause(800);
-            if (!interfered) {
-              appendFileSync(OUT, `${JSON.stringify(record)}\n`);
+            // A window lost three times over is the agent's doing, not a visitor's: it is recorded as it stands.
+            const lostWindow = interfered && !record.intruders.length && attempt >= 3;
+            if (!interfered || lostWindow) {
+              appendFileSync(OUT, `${JSON.stringify(lostWindow ? { ...record, interfered } : record)}\n`);
               const r = record;
               process.stderr.write(`${tag}: ${r.pass ? "PASS" : "FAIL"} claimed=${r.claimed} tools=${r.toolCalls} ${Math.round(r.wallMs / 1000)}s $${r.costUsd.toFixed(3)}${r.error ? ` error=${r.error.slice(0, 120)}` : ""}\n`);
               break;
