@@ -3,3 +3,4 @@ dist/
 .work/
 results/raw/*.stream.jsonl
 results/raw/
+results/*/raw/
