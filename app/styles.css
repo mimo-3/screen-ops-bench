@@ -81,3 +81,87 @@ ol.list { counter-reset: n; }
 .menu { position: absolute; right: 0; top: 110%; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
 .menu button { border: none; text-align: left; }
 .menu.sub { right: 100%; top: 30px; margin-right: 4px; }
+/* hard: traps */
+.backdrop.traps-top { z-index: 10; }
+.traps-cols { display: grid; grid-template-columns: 1fr 240px; gap: 24px; }
+/* end hard: traps */
+/* hard: widgets */
+.card.wide { max-width: 1080px; }
+.tokens { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.token { display: inline-flex; align-items: center; gap: 4px; background: #eef1f5; border-radius: 999px; padding: 2px 4px 2px 10px; }
+.combo { position: relative; }
+.combo input { width: 100%; }
+.popup { list-style: none; margin: 4px 0 0; padding: 4px; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.12); position: absolute; left: 0; right: 0; z-index: 5; }
+.popup.scroll { max-height: 220px; overflow-y: auto; top: 100%; }
+.opt { padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.opt.active { background: #e7ecfd; }
+.opt.chosen { font-weight: 600; }
+.opt.off { opacity: .5; cursor: default; }
+.selectbtn { text-align: left; min-width: 180px; }
+.board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.column { background: #f1f3f6; border-radius: 10px; padding: 10px; min-height: 240px; }
+.cards { min-height: 180px; }
+.kcard { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; padding: 8px; }
+.kcard.grabbed { box-shadow: 0 0 0 2px var(--accent); }
+.handle { border: none; padding: 0 4px; cursor: grab; color: var(--muted); }
+.tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+.tnode:focus { outline: none; }
+.tnode:focus > .trow { outline: 2px solid var(--accent); outline-offset: -2px; }
+.trow { display: flex; gap: 6px; align-items: center; padding: 4px 8px; border-radius: 6px; cursor: default; }
+.trow.focused { background: #e7ecfd; }
+.twisty { width: 12px; color: var(--muted); }
+.tload { padding: 4px 8px; }
+.staron { color: #f59f00; }
+.spaced { margin-top: 20px; }
+.ctx-overlay { position: fixed; inset: 0; }
+.ctxmenu { position: fixed; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,.18); z-index: 10; }
+.ctxmenu button { border: none; text-align: left; }
+.ctxmenu button:focus { background: #e7ecfd; outline: none; }
+.ctxmenu button.danger { color: var(--danger); }
+.ctxmenu hr { border: none; border-top: 1px solid var(--line); margin: 4px 0; width: 100%; }
+.day.inrange { background: #e7ecfd; }
+/* end hard: widgets */
+/* hard: flows */
+.flows-layout { display: grid; grid-template-columns: 180px 1fr; gap: 16px; max-width: 1040px; margin: 0 auto; align-items: start; }
+.flows-nav { display: flex; flex-direction: column; gap: 4px; }
+.flows-nav button { text-align: left; border: none; background: none; }
+.flows-nav button.active { background: #e7ecfb; color: var(--accent); font-weight: 600; }
+.flows-main { max-width: none; margin: 0; min-width: 0; }
+.flows-quote { margin: 8px 0 14px; padding: 10px 14px; border-left: 3px solid var(--line); background: #fafbfc; }
+.flows-reply { background: #eef3ff; border-radius: 8px; padding: 8px 12px; }
+.flows-sub { margin-top: 16px; }
+.flows-qty { width: 84px; }
+.flows-gap { gap: 32px; align-items: flex-start; margin-top: 16px; }
+.flows-doc { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; }
+.flows-doc dl, .flows-aside dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 8px 0 0; }
+.flows-doc dd, .flows-aside dd { margin: 0; }
+.flows-doc dt, .flows-aside dt { color: var(--muted); font-size: 13px; }
+.flows-split { display: flex; gap: 16px; align-items: flex-start; }
+.flows-aside { width: 260px; border-left: 1px solid var(--line); padding-left: 16px; }
+.flows-crumbs { gap: 4px; margin-bottom: 8px; }
+.flows-toolbar { margin-bottom: 8px; }
+.flows-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #1b1f24; color: #fff; border-radius: 8px; padding: 10px 16px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.flows-toast button.link { color: #9db4ff; }
+.flows-toast button.icon { background: none; border: none; color: #fff; }
+/* end hard: flows */
+
+/* hard: data */
+.card.data-wide { max-width: 1040px; }
+.data-filters { flex-wrap: wrap; margin-bottom: 10px; }
+.data-bulk { margin: 6px 0; padding: 6px 10px; background: #f1f3f7; border-radius: 8px; }
+.data-banner { margin: 6px 0; padding: 6px 10px; background: #edf2ff; border-radius: 8px; font-size: 14px; }
+.data-pager { margin-top: 10px; flex-wrap: wrap; }
+.data-tag { margin-right: 4px; }
+.data-qty { width: 80px; }
+.data-inline-error { display: block; font-size: 12px; }
+.sorter { padding: 0; font-weight: 600; font-size: 12px; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+.vgrid { height: 396px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; position: relative; }
+.vgrid:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vgrid .vhead { position: sticky; top: 0; z-index: 1; display: grid; height: 36px; align-items: center; background: #fff; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); font-weight: 600; }
+.vgrid .vbody { position: relative; }
+.vgrid .vrow { position: absolute; left: 0; right: 0; height: 36px; display: grid; align-items: center; border-bottom: 1px solid var(--line); font-size: 14px; }
+.vgrid .vrow > div, .vgrid .vhead > div { padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vgrid .vempty { padding: 8px 12px; margin: 0; }
+/* end hard: data */
