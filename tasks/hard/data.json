@@ -1,0 +1,190 @@
+{
+  "tasks": [
+    {
+      "id": "ledger-refund",
+      "title": "Payments ledger",
+      "category": "data",
+      "skills": [
+        "virtualized list",
+        "search and filter",
+        "sort by column",
+        "compare values across rows",
+        "dialog with validation"
+      ],
+      "traps": [
+        "only ~16 of 492 rows are in the DOM; the target is ~150 rows down",
+        "look-alike customer Harbor Freight Corp (larger August card payments) also matches a search for 'Harbor Freight Co.'",
+        "a larger August card payment that is still Pending can be refunded too",
+        "the next row has the same date and amount but is Partially refunded (a $200 refund already exists)",
+        "larger August payments by bank transfer or PayPal, and an already Refunded one",
+        "larger card payments just outside August (Jul 31, Sep 1)",
+        "near-identical amounts $1,284.50 vs $1,248.50",
+        "Amount sorts ascending on first click",
+        "reason is required; the amount field must stay the full amount"
+      ],
+      "prompt": "In the payments ledger, find Harbor Freight Co.'s largest card payment made in August 2026 whose status is Settled, and refund it in full with the reason \"Duplicate charge\". Don't refund anything else.",
+      "expected": {
+        "refunds": [
+          {
+            "id": "TX-30338",
+            "amount": 200,
+            "reason": "Customer request"
+          },
+          {
+            "id": "TX-30337",
+            "amount": 1284.5,
+            "reason": "Duplicate charge"
+          }
+        ],
+        "dialogOpen": false
+      }
+    },
+    {
+      "id": "tickets-bulk-archive",
+      "title": "Ticket queue",
+      "category": "data",
+      "skills": [
+        "filter",
+        "pagination",
+        "select all on page",
+        "select all matching",
+        "bulk action with exceptions",
+        "confirm dialog"
+      ],
+      "traps": [
+        "two tickets from other queues are already selected (stale selection kept across filters)",
+        "look-alike queue Billing Escalations",
+        "select-all only covers the current page (23 matching over 3 pages)",
+        "three legal-hold exceptions sit on different pages",
+        "look-alike tag legal-review must still be archived",
+        "archive is irreversible"
+      ],
+      "prompt": "In the ticket queue, archive every Closed ticket in the Billing queue except the ones tagged legal-hold. Don't archive any other ticket.",
+      "expected": {
+        "archived": [
+          "#4006",
+          "#4019",
+          "#4027",
+          "#4032",
+          "#4038",
+          "#4043",
+          "#4049",
+          "#4060",
+          "#4066",
+          "#4071",
+          "#4079",
+          "#4084",
+          "#4090",
+          "#4097",
+          "#4102",
+          "#4108",
+          "#4113",
+          "#4126",
+          "#4131",
+          "#4138"
+        ],
+        "dialogOpen": false
+      }
+    },
+    {
+      "id": "stock-reorder",
+      "title": "Reorder planner",
+      "category": "data",
+      "skills": [
+        "filter",
+        "delayed load more",
+        "compare two columns per row",
+        "arithmetic",
+        "many text entries",
+        "single submit"
+      ],
+      "traps": [
+        "rows load 15 at a time after a delay; the last shortfall only appears after two 'Load more'",
+        "sorting by On hand only reorders the rows already loaded",
+        "other warehouses have their own shortfalls for the same SKUs",
+        "rows exactly at the reorder point must not be ordered",
+        "discontinued products below their reorder point",
+        "Safety stock column next to Reorder point",
+        "a shortfall of just 1 unit (199 vs 200)"
+      ],
+      "prompt": "In the reorder planner, for the Rotterdam warehouse only: every active product whose on-hand stock is below its reorder point needs an order that brings it exactly up to the reorder point. Enter those quantities and create a single purchase order. Order nothing else.",
+      "expected": {
+        "purchaseOrders": [
+          {
+            "lines": [
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1037",
+                "qty": 83
+              },
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1190",
+                "qty": 31
+              },
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1309",
+                "qty": 32
+              },
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1411",
+                "qty": 24
+              },
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1564",
+                "qty": 25
+              },
+              {
+                "warehouse": "Rotterdam",
+                "sku": "PK-1632",
+                "qty": 1
+              }
+            ]
+          }
+        ],
+        "draft": []
+      }
+    },
+    {
+      "id": "logs-incident-link",
+      "title": "Incident logs",
+      "category": "data",
+      "skills": [
+        "virtualized list",
+        "filters",
+        "time zone reading",
+        "range selection",
+        "boundary comparison",
+        "dialog"
+      ],
+      "traps": [
+        "times are shown in UTC+02:00 until switched; a matching error burst sits at 14:02-14:05 local time",
+        "3,600 virtualized lines; the window is ~20 rows down even after filtering",
+        "boundary errors at 14:01:57 and 14:06:00 UTC",
+        "look-alike service payments-api-canary",
+        "checkout errors whose message mentions payments-api (text search catches them)",
+        "payments-api WARN lines inside the window",
+        "shift-click ranges include every line shown between the two clicks"
+      ],
+      "prompt": "In the incident logs, link every ERROR line from the payments-api service logged between 14:02:00 and 14:05:59 UTC (inclusive) to incident INC-2291. Don't link any other line.",
+      "expected": {
+        "links": {
+          "INC-2291": [
+            "L-2441",
+            "L-2452",
+            "L-2464",
+            "L-2475",
+            "L-2486",
+            "L-2498",
+            "L-2509",
+            "L-2520"
+          ]
+        },
+        "dialogOpen": false
+      }
+    }
+  ]
+}
