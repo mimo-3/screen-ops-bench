@@ -1,0 +1,152 @@
+{
+  "tasks": [
+    {
+      "id": "support-refund",
+      "title": "Helpdesk Console",
+      "category": "support",
+      "skills": ["read a ticket", "look up on another view", "async search", "partial refund", "reply and solve"],
+      "traps": [
+        "two customers named Mei Chen with look-alike order numbers on the same date",
+        "a second ticket from the other Mei Chen about the same teapot",
+        "refund one of two teapots, not both, and not the teapot lid",
+        "refund method defaults to store credit",
+        "search results arrive after a delay",
+        "a reply typed before going to Orders is lost",
+        "the status to set is a separate select next to Send reply that defaults to Open"
+      ],
+      "prompt": "Handle Mei Chen's support ticket about the broken teapot. Refund exactly what she asks for, the way she asks for it, choosing the refund reason that matches her problem. Then reply to that ticket with exactly \"Your refund is on its way.\" and set the ticket to Solved. Do not change any other ticket or order.",
+      "expected": {
+        "refunds": [
+          {
+            "order": "ORD-58231",
+            "items": { "Ceramic Teapot": 1 },
+            "reason": "Damaged on arrival",
+            "method": "Original payment method",
+            "amount": 34
+          }
+        ],
+        "tickets": {
+          "T-4175": { "status": "Open", "replies": [] },
+          "T-4172": { "status": "Solved", "replies": ["Your refund is on its way."] },
+          "T-4170": { "status": "Open", "replies": [] }
+        }
+      }
+    },
+    {
+      "id": "payout-setup",
+      "title": "Payout Setup",
+      "category": "form",
+      "skills": ["copy values between views", "replace prefilled values", "unsaved-changes guard", "read server errors", "resubmit"],
+      "traps": [
+        "the form is prefilled from the superseded bank letter",
+        "two documents titled Bank confirmation letter, the old one listed first",
+        "legal name differs from the trading name",
+        "the minimum payout threshold is only revealed by a server error after a delay",
+        "leaving the form with unsaved edits asks to discard them"
+      ],
+      "prompt": "Fill in our payout details from the information under Company documents (use the current bank letter, not a superseded one, and our VAT ID), with payouts in euros and the lowest payout threshold the portal accepts, and submit them for verification so they are accepted.",
+      "expected": {
+        "status": "Pending verification",
+        "submitted": {
+          "holder": "Brightwave Solutions GmbH",
+          "iban": "DE89370400440532013000",
+          "bic": "COBADEFFXXX",
+          "vat": "DE318442907",
+          "currency": "EUR",
+          "threshold": 100
+        },
+        "acceptedSubmissions": 1
+      }
+    },
+    {
+      "id": "drive-cleanup",
+      "title": "Northwind Drive",
+      "category": "files",
+      "skills": ["folder navigation", "details pane", "multi-select", "move dialog", "delete", "restore from trash"],
+      "traps": [
+        "invoice dates are only in the details pane; the Modified column misleads",
+        "invoice numbers do not follow invoice dates (0829 is Q3, 0935 is Q2)",
+        "Finance › 2025 › Q3 looks like Finance › 2026 › Q3",
+        "the duplicate has the same invoice date as the original",
+        "Trash holds two Brand guidelines v3.pdf from different folders and dates",
+        "Delete forever sits next to Restore",
+        "folders in the move dialog load after a delay"
+      ],
+      "prompt": "Tidy up Inbox uploads in the drive: delete the duplicate Invoice-0932 (1).pdf there, and move every invoice whose invoice date falls in Q3 2026 (July to September) into Finance › 2026 › Q3. Leave all other files where they are. Also restore the copy of Brand guidelines v3.pdf that was deleted yesterday to where it was. Do not permanently delete anything; the duplicate should stay in Trash.",
+      "expected": {
+        "folders": {
+          "My Drive": ["Welcome.pdf"],
+          "My Drive / Inbox uploads": ["Invoice-0935.pdf", "Team photo.jpg"],
+          "My Drive / Finance": ["Budget 2026.xlsx"],
+          "My Drive / Finance / 2025": [],
+          "My Drive / Finance / 2025 / Q3": ["Invoice-0612.pdf"],
+          "My Drive / Finance / 2025 / Q4": [],
+          "My Drive / Finance / 2026": [],
+          "My Drive / Finance / 2026 / Q2": ["Invoice-0788.pdf"],
+          "My Drive / Finance / 2026 / Q3": ["Invoice-0829.pdf", "Invoice-0901.pdf", "Invoice-0931.pdf", "Invoice-0932.pdf"],
+          "My Drive / Marketing": ["Brand guidelines v3.pdf", "Brand guidelines v4.pdf"],
+          "My Drive / Marketing / Archive": ["Logo pack.zip"]
+        },
+        "trash": [
+          { "name": "Brand guidelines v2.pdf", "from": "My Drive / Marketing / Archive", "deletedOn": "2026-08-20" },
+          { "name": "Brand guidelines v3.pdf", "from": "My Drive / Marketing / Archive", "deletedOn": "2026-09-02" },
+          { "name": "Invoice-0932 (1).pdf", "from": "My Drive / Inbox uploads", "deletedOn": "2026-09-25" }
+        ]
+      }
+    },
+    {
+      "id": "event-update",
+      "title": "Event Planner",
+      "category": "planning",
+      "skills": ["look up on another view", "async details", "per-tab save", "arithmetic from read values", "schedule validation"],
+      "traps": [
+        "a look-alike event (Workshop Day) with its own Keynote",
+        "the biggest Harbor Hall room has no projector; the separate Harbor Hall Annex venue has a bigger Room B with a projector",
+        "switching tabs silently discards unsaved edits (a toast offers Restore)",
+        "tickets are validated against the saved venue, so the venue must be saved first",
+        "General admission must be computed from the room's seats, the 20 speaker seats and the existing VIP count",
+        "the Q&A must start when the Keynote ends (45 minutes), not simply one hour later"
+      ],
+      "prompt": "Update the Autumn Dev Summit on October 15: move it to the room at the Harbor Hall venue (not Harbor Hall Annex) that has a projector and the most seats; set General admission tickets so that General admission plus VIP equals that room's seat count minus 20 seats reserved for speakers (keep VIP as it is); and push the Keynote back by one hour, with the Keynote Q&A starting right when the Keynote ends. Save all of it, and do not change any other event.",
+      "expected": {
+        "events": {
+          "ev-ads": {
+            "name": "Autumn Dev Summit",
+            "date": "2026-10-15",
+            "venue": "Harbor Hall — Room B",
+            "ga": 190,
+            "vip": 30,
+            "sessions": [
+              { "name": "Registration", "start": "08:30", "minutes": 60 },
+              { "name": "Keynote", "start": "10:30", "minutes": 45 },
+              { "name": "Keynote Q&A", "start": "11:15", "minutes": 30 },
+              { "name": "Lunch", "start": "12:00", "minutes": 60 }
+            ]
+          },
+          "ev-adw": {
+            "name": "Autumn Dev Summit — Workshop Day",
+            "date": "2026-10-16",
+            "venue": "Harbor Hall — Room C",
+            "ga": 80,
+            "vip": 0,
+            "sessions": [
+              { "name": "Keynote", "start": "09:00", "minutes": 30 },
+              { "name": "Workshops", "start": "09:30", "minutes": 180 }
+            ]
+          },
+          "ev-wk": {
+            "name": "Winter Kickoff",
+            "date": "2026-12-03",
+            "venue": "Main Street Loft",
+            "ga": 100,
+            "vip": 10,
+            "sessions": [
+              { "name": "Welcome", "start": "17:00", "minutes": 30 },
+              { "name": "Keynote", "start": "17:30", "minutes": 40 }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
