@@ -1,0 +1,26 @@
+{
+  "suite": "hard",
+  "reps": 1,
+  "tasks": 2,
+  "only": [
+    "support-refund",
+    "pr-reviewers"
+  ],
+  "agents": [
+    "opus-5.5",
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna"
+  ],
+  "tools": [
+    "cua-jev"
+  ],
+  "purpose": "Re-measure the two tasks cua-jev lost in results/hard, after adding number fields, list-box options, scrolling and table reading to cua-jev. cua-driver was not re-run; compare with its runs in results/hard.",
+  "cuaJev": "c15bc93 (feat/number-input-and-options, built from 4fb1e60)",
+  "earlier": {
+    "hard-v2-pre": "cua-jev 3dffc51..e0ae59a: the native reader still walked table columns, so number fields read no value",
+    "hard-v2": "cua-jev 002a5fa: before closing a pop-up's menu after a direct item press"
+  },
+  "claudeCode": "2.1.282",
+  "date": "2026-09-25"
+}
