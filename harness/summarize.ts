@@ -18,6 +18,7 @@ const args = process.argv.slice(2);
 const IN = resolve(ROOT, args.includes("--in") ? args[args.indexOf("--in") + 1]! : "results/runs.jsonl");
 
 export interface RunRecord {
+  suite?: string;
   task: string;
   category: string;
   agent: string;
@@ -25,6 +26,7 @@ export interface RunRecord {
   rep: number;
   pass: boolean;
   checks: { passed: number; total: number };
+  mismatches?: string[];
   claimed: string;
   falseSuccess: boolean;
   toolCalls: number;
@@ -124,9 +126,9 @@ function main(): void {
   const metaPath = join(dirname(IN), "meta.json");
   const meta = existsSync(metaPath) ? JSON.parse(readFileSync(metaPath, "utf8")) : {};
   const slim = runs.map((r) => ({
-    task: r.task, agent: r.agent, tools: r.tools, rep: r.rep, pass: r.pass, partial: round(r.checks.passed / r.checks.total), claimed: r.claimed,
+    suite: r.suite ?? "basic", task: r.task, agent: r.agent, tools: r.tools, rep: r.rep, pass: r.pass, partial: round(r.checks.passed / r.checks.total), claimed: r.claimed,
     sec: round(r.wallMs / 1000, 1), toolCalls: r.toolCalls, tokens: tokensOf(r), output: r.usage.output, costUsd: round(r.costUsd, 4),
-    jevCalls: r.jev.calls, timedOut: r.timedOut, focusSteals: r.focusSteals,
+    jevCalls: r.jev.calls, timedOut: r.timedOut, focusSteals: r.focusSteals, missed: (r.mismatches ?? []).map((m) => m.slice(0, m.indexOf(":"))),
   }));
   writeFileSync(join(dirname(IN), "report-data.json"), `${JSON.stringify({ meta, overall, perTask, runs: slim })}\n`);
 
