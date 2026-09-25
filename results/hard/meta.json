@@ -16,9 +16,24 @@
   "pilot": "results/hard-pilot: opus-5.5 x cua-driver x 16 tasks x 1 rep, 16/16 passed",
   "plan": {
     "reps": 2,
-    "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
-    "tools": ["cua-jev", "cua-driver"],
-    "tasks": 16,
-    "timeoutMin": 15
+    "agents": [
+      "opus-5.5",
+      "gpt-6-astra",
+      "gpt-6-sol",
+      "gpt-6-luna"
+    ],
+    "tools": [
+      "cua-jev",
+      "cua-driver"
+    ],
+    "tasks": 4,
+    "timeoutMin": 15,
+    "only": [
+      "ledger-refund",
+      "support-refund",
+      "profile-tabs-save",
+      "pr-reviewers"
+    ],
+    "taskSelection": "to cut cost, the first task of each of the four design groups (data, flows, traps, widgets) in file order; chosen by rule, not by results. Runs of other tasks made before the cut are in dropped-tasks.jsonl and not counted."
   }
 }
