@@ -9,8 +9,13 @@ export const TASK = params.get("task") ?? "";
 export const RUN = params.get("run") ?? "";
 
 let seq = 0;
+let latest: unknown;
+
+/** The state the page reported last (the tests read it; the harness gets it from the server). */
+export const lastReported = (): unknown => latest;
 
 export function report(state: unknown): void {
+  latest = state;
   if (!RUN) return;
   const body = JSON.stringify({ seq: ++seq, task: TASK, state });
   void fetch(`/api/state?run=${encodeURIComponent(RUN)}`, { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true });
