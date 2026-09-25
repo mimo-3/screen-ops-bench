@@ -207,10 +207,18 @@ function watchInterference(bench: number, before: Map<number, string>): { stop: 
   };
 }
 
-/** Holds the bench until no automated Chrome other than its own is running. */
+/** Automated Chromes already running when the bench started (another session's, say): they were there for every run alike. */
+let preexisting = new Set<number>();
+
+/** Holds the bench until no automated Chrome has started since the bench did, other than its own. */
 async function waitForQuiet(bench?: number): Promise<void> {
-  for (let others = await automatedChromes(bench); others.size; others = await automatedChromes(bench)) {
-    process.stderr.write(`another automated Chrome is running (${[...others.keys()].join(", ")}): waiting\n`);
+  let told = "";
+  for (;;) {
+    const others = [...(await automatedChromes(bench)).keys()].filter((pid) => !preexisting.has(pid));
+    if (!others.length) return;
+    const now = others.join(", ");
+    if (now !== told) process.stderr.write(`another automated Chrome started (${now}): waiting until it exits\n`);
+    told = now;
     await pause(15_000);
   }
 }
@@ -366,6 +374,8 @@ async function main(): Promise<void> {
   const awake = spawn("caffeinate", ["-d", "-i", "-w", String(process.pid)], { stdio: "ignore" });
   awake.unref();
   const srv = await startServer();
+  preexisting = new Set((await automatedChromes(await chromePid())).keys());
+  if (preexisting.size) process.stderr.write(`automated Chromes already running, not waited for: ${[...preexisting].join(", ")}\n`);
   try {
     await (dry ? dryRun(srv) : bench(srv));
   } finally {
