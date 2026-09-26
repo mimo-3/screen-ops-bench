@@ -6,6 +6,7 @@
  *
  *   tsx harness/run.ts [--suite basic|hard] [--reps N] [--agents opus-5.5,gpt-6-sol] [--tools cua-jev,cua-driver]
  *                      [--only task,task] [--timeout-min 15] [--out results/runs.jsonl] [--dry]
+ *                      [--variant name [--guide file.md] [--effort low] [--features code_mode] [--deny tool,tool]]
  *
  * Records are appended to the output file, and a run already recorded there is skipped, so an
  * interrupted bench resumes where it stopped. While the screen is locked, the bench waits.
