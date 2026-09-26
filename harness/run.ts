@@ -6,6 +6,7 @@
  *
  *   tsx harness/run.ts [--suite basic|hard] [--reps N] [--agents opus-5.5,gpt-6-sol] [--tools cua-jev,cua-driver]
  *                      [--only task,task] [--timeout-min 15] [--out results/runs.jsonl] [--dry]
+ *                      [--variant name [--guide file.md] [--effort low] [--features code_mode] [--deny tool,tool]]
  *
  * Records are appended to the output file, and a run already recorded there is skipped, so an
  * interrupted bench resumes where it stopped. While the screen is locked, the bench waits.
@@ -47,7 +48,16 @@ const args = process.argv.slice(2);
 const opt = (name: string) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 const reps = Number(opt("--reps") ?? 1);
 const agentLabels = opt("--agents")?.split(",");
-const agents = AGENTS.filter((a) => !agentLabels || agentLabels.includes(a.label));
+// --variant names a change under test (--guide file, --effort level); it is appended to each agent's label.
+const variant = opt("--variant");
+const guide = opt("--guide") ? readFileSync(resolve(opt("--guide")!), "utf8") : undefined;
+const effort = opt("--effort");
+const features = opt("--features")?.split(",");
+const deny = opt("--deny")?.split(",");
+if (!variant && (guide || effort || features || deny)) throw new Error("--guide, --effort, --features and --deny need --variant, or their runs would be recorded as the plain agent");
+const agents = AGENTS.filter((a) => !agentLabels || agentLabels.includes(a.label)).map((a) =>
+  variant ? { ...a, label: `${a.label}+${variant}`, guide, effort, features, deny } : a,
+);
 const toolSets = (opt("--tools")?.split(",") ?? ["cua-jev", "cua-driver"]) as ToolSet[];
 const only = opt("--only")?.split(",");
 const timeoutMs = Number(opt("--timeout-min") ?? 15) * 60_000;

@@ -149,6 +149,10 @@ Run 2026-09-25: 4 models × 2 tool sets × 4 Hard tasks × 2 reps = 64 runs (2.2
 
 Files in `results/hard/`: `runs.jsonl`, `summary.{md,json}`, `report-data.json`, `meta.json` (versions, plan, task selection), `bench.log`, `raw-streams.tar.xz`, `dropped-tasks.jsonl`.
 
+### Speed (GPT-6 Sol · cua-driver)
+
+Run 2026-09-26/27: where a Codex run on plain cua-driver spends its time, and what cuts it. About 85% of a run is the model's replies, not the tools, so the changes cut replies: standing instructions ([`results/speed/guides/v3.md`](results/speed/guides/v3.md)), `model_reasoning_effort = "low"`, and fewer cua-driver tools. Median wall time went from 49.1 s to 30.0 s on Basic (24 runs each, all passed) and from 161.4 s to 60.6 s on four Hard tasks (7/8 to 8/8), at about half the tokens. Details, every variant tried and how to reproduce: [`results/speed/`](results/speed).
+
 ## License
 
 MIT
