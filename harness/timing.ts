@@ -2,6 +2,8 @@
  * Splits each run's wall time into startup, model and tool time from the arrival times the harness stamps on every event.
  *   tsx harness/timing.ts results/speed/baseline.jsonl [more.jsonl...]
  * First call: until the first tool call starts. Tool: from a tool call's start to its end. Model: the rest.
+ * Codex streams only: Claude's events are shaped differently and are skipped. Codex runs the calls of one reply one after another,
+ * so their spans do not overlap.
  * Turns: model responses that led to a tool call. A call that starts within 500 ms of the previous one's end came out of the same response.
  */
 import { existsSync, readFileSync } from "node:fs";
@@ -18,6 +20,7 @@ for (const file of process.argv.slice(2)) {
   const byAgent = new Map<string, { wall: number[]; start: number[]; tool: number[]; model: number[]; calls: number[]; steps: number[]; pass: number; n: number; tokens: number[] }>();
   for (const line of readFileSync(file, "utf8").split("\n").filter(Boolean)) {
     const r = JSON.parse(line);
+    if (r.harness !== "codex") continue;
     const stream = join(dirname(file), "raw", `${r.runId}.stream.jsonl`);
     if (!existsSync(stream)) continue;
     const ev = readFileSync(stream, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
