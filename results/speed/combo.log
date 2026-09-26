@@ -1,0 +1,13 @@
+automated Chromes already running, not waited for: 48848, 66265
+[1/12] signup-form gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=13 51s $0.103
+[2/12] notes-append gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=5 25s $0.126
+[3/12] cart-coupon gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=9 37s $0.083
+[4/12] invoice-paid gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=3 17s $0.067
+[5/12] contact-star gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=3 20s $0.073
+[6/12] delete-draft gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=5 25s $0.078
+[7/12] todo-reorder gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=5 23s $0.090
+[8/12] settings-tabs gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=8 31s $0.123
+[9/12] wizard-team gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=13 43s $0.087
+[10/12] date-picker gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=8 33s $0.095
+[11/12] volume-slider gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=12 40s $0.129
+[12/12] nested-menu gpt-6-sol+combo cua-driver rep 1: PASS claimed=success tools=7 31s $0.091
