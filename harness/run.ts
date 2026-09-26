@@ -55,6 +55,8 @@ const OUT = resolve(ROOT, opt("--out") ?? "results/runs.jsonl");
 const INTERFERED = join(dirname(OUT), "interfered.jsonl");
 const RAW = join(dirname(OUT), "raw");
 const dry = args.includes("--dry");
+/** Jev 1.13: $0.042 per million input tokens, output free (docs.typesafe.ai/models). */
+const JEV_USD_PER_TOKEN = 0.042 / 1e6;
 const suites = (opt("--suite")?.split(",") ?? ["basic"]) as Suite[];
 const tasks = loadTasks(suites).filter((t) => !only || only.includes(t.id));
 
@@ -327,7 +329,7 @@ async function runOnce(srv: BenchServer, task: Task, agent: AgentSpec, tools: To
     pass: v.pass, checks: v.checks, mismatches: v.mismatches, final,
     claimed, falseSuccess: claimed === "success" && !v.pass,
     toolCalls: a.toolCalls, toolNames: a.toolNames, otherTools: a.otherTools,
-    wallMs, usage: a.usage, costUsd: costUsd(agent.model, a.usage), reportedCostUsd: a.reportedCostUsd,
+    wallMs, usage: a.usage, costUsd: costUsd(agent.model, a.usage), reportedCostUsd: a.reportedCostUsd, jevCostUsd: a.jev.inputTokens * JEV_USD_PER_TOKEN,
     jev: a.jev, focusSteals: steals, startedInBackground: background, windowId, windowsAfter, intruders, timedOut: a.timedOut, exitCode: a.exitCode, error: a.error,
   };
   const interfered = intruders.length ? `${intruders.length} automated Chrome started` : windowsAfter.length !== 1 ? `${windowsAfter.length} windows after the run` : "";

@@ -135,9 +135,9 @@ function codexCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: str
   return { cmd: "codex", argv, env: { ...process.env, CODEX_HOME: home } };
 }
 
+/** Every Jev usage in a result: an act run with `then` reports one per step. */
 function jevOf(r: AgentRun, text: string): void {
-  const m = /"jev":\{"calls":(\d+),"inputTokens":(\d+)/.exec(text);
-  if (m) {
+  for (const m of text.matchAll(/"jev":\{"calls":(\d+),"inputTokens":(\d+)/g)) {
     r.jev.calls += Number(m[1]);
     r.jev.inputTokens += Number(m[2]);
   }
