@@ -105,7 +105,7 @@ An interrupted bench resumes: a run already in the output file is skipped. While
 
 **Do not run another Chrome while the bench runs**, not even headless. On 2026-09-24 a headless Chrome started for screenshots coincided with a stray "New Tab" window appearing in the bench's Chrome, and the harness then (before the guard above) sometimes gave agents that window. Those 53 runs are kept apart in `results/invalid/` and were run again.
 
-Run 2026-09-24/25: 4 models × 2 tool sets × 12 tasks × 3 reps = 288 runs, all one after another (3.6 hours of agent time). Full table: [`results/summary.md`](results/summary.md). Write-up: https://hooly.jp/arts-and-crafts/screen-ops-bench-2026-09/
+Run 2026-09-24/25: 4 models × 2 tool sets × 12 tasks × 3 reps = 288 runs, all one after another (3.6 hours of agent time). Full table: [`results/summary.md`](results/summary.md).
 
 | agent · tools | pass | false success | time s (median) | tokens/run (median) | USD/run |
 |---|---|---|---|---|---|
@@ -128,7 +128,7 @@ Files: `runs.jsonl` (one record per run), `summary.{md,json}`, `report-data.json
 
 ### Hard
 
-Run 2026-09-25: 4 models × 2 tool sets × 4 Hard tasks × 2 reps = 64 runs (2.2 hours of agent time, $36.75 of model cost at list price). To keep the cost down, the four tasks were fixed by rule before the run: the first task of each group in file order (`ledger-refund`, `support-refund`, `profile-tabs-save`, `pr-reviewers`). Four runs of `tickets-bulk-archive` made before that cut are kept in `results/hard/dropped-tasks.jsonl` and not counted. Before the run, a pilot with Opus 5.5 · cua-driver passed all 16 tasks once (`results/hard-pilot/`, not counted), so no task is unsolvable. No run was interfered with. Full table: [`results/hard/summary.md`](results/hard/summary.md). Write-up: https://hooly.jp/arts-and-crafts/cua-jev-vs-cua-driver-2026-09/
+Run 2026-09-25: 4 models × 2 tool sets × 4 Hard tasks × 2 reps = 64 runs (2.2 hours of agent time, $36.75 of model cost at list price). To keep the cost down, the four tasks were fixed by rule before the run: the first task of each group in file order (`ledger-refund`, `support-refund`, `profile-tabs-save`, `pr-reviewers`). Four runs of `tickets-bulk-archive` made before that cut are kept in `results/hard/dropped-tasks.jsonl` and not counted. Before the run, a pilot with Opus 5.5 · cua-driver passed all 16 tasks once (`results/hard-pilot/`, not counted), so no task is unsolvable. No run was interfered with. Full table: [`results/hard/summary.md`](results/hard/summary.md). These four tasks were then used to improve cua-jev, so they favor it; the held-out comparison after the fixes is in `results/hard-v4-fresh/` (write-up: https://hooly.jp/arts-and-crafts/cua-jev-weak-spots-2026-09/).
 
 | agent · tools | pass | false success | time s (median) | tokens/run (median) | USD/run |
 |---|---|---|---|---|---|
