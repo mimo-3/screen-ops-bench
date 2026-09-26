@@ -1,0 +1,14 @@
+{
+  "suite": "hard",
+  "reps": 1,
+  "tasks": 7,
+  "only": ["stock-reorder", "payout-setup", "drive-cleanup", "project-delete-confirm", "vacation-responder", "roadmap-board", "studio-booking"],
+  "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
+  "tools": ["cua-jev", "cua-driver"],
+  "purpose": "Fresh comparison after the cua-jev fixes for context menus, modifier clicks, table rows in screenText, unnamed tables in extract and web text fields: the 7 Hard tasks never used before (payout-setup was only in the cua-driver pilot) and not looked at while improving cua-jev. Both tools run on the same day.",
+  "notes": "gpt-6-luna · cua-jev · studio-booking failed on its first act because the Jev API returned 403 (RBAC: access denied) for a few minutes; it is counted as a failure.",
+  "cuaJev": "4cdd630 (feat/weak-spots)",
+  "cuaDriver": "0.8.3",
+  "claudeCode": "2.1.282",
+  "date": "2026-09-26"
+}
