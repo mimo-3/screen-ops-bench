@@ -47,7 +47,15 @@ const args = process.argv.slice(2);
 const opt = (name: string) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 const reps = Number(opt("--reps") ?? 1);
 const agentLabels = opt("--agents")?.split(",");
-const agents = AGENTS.filter((a) => !agentLabels || agentLabels.includes(a.label));
+// --variant names a change under test (--guide file, --effort level); it is appended to each agent's label.
+const variant = opt("--variant");
+const guide = opt("--guide") ? readFileSync(resolve(opt("--guide")!), "utf8") : undefined;
+const effort = opt("--effort");
+const features = opt("--features")?.split(",");
+const deny = opt("--deny")?.split(",");
+const agents = AGENTS.filter((a) => !agentLabels || agentLabels.includes(a.label)).map((a) =>
+  variant ? { ...a, label: `${a.label}+${variant}`, guide, effort, features, deny } : a,
+);
 const toolSets = (opt("--tools")?.split(",") ?? ["cua-jev", "cua-driver"]) as ToolSet[];
 const only = opt("--only")?.split(",");
 const timeoutMs = Number(opt("--timeout-min") ?? 15) * 60_000;
