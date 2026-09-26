@@ -1,0 +1,13 @@
+{
+  "suite": "hard",
+  "reps": 1,
+  "tasks": 4,
+  "only": ["logs-incident-link", "event-update", "checkout-country-reset", "contract-files"],
+  "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
+  "tools": ["cua-jev"],
+  "purpose": "The 4 tasks of results/hard-heldout, run again with cua-jev only after the fixes. Their failures were read while improving cua-jev, so this is not a held-out result; compare with the cua-driver runs in results/hard-heldout from the same day.",
+  "cuaJev": "4cdd630 (feat/weak-spots)",
+  "cuaDriver": "0.8.3",
+  "claudeCode": "2.1.282",
+  "date": "2026-09-26"
+}
