@@ -1,0 +1,26 @@
+{
+  "suite": "hard",
+  "reps": 1,
+  "tasks": 4,
+  "only": [
+    "logs-incident-link",
+    "event-update",
+    "checkout-country-reset",
+    "contract-files"
+  ],
+  "agents": [
+    "opus-5.5",
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna"
+  ],
+  "tools": [
+    "cua-jev",
+    "cua-driver"
+  ],
+  "purpose": "Held-out comparison: one task per group, drawn at random from the 12 Hard tasks not used in results/hard, and not looked at while improving cua-jev. Both tools run on the same day.",
+  "cuaJev": "9c72db5 (main)",
+  "cuaDriver": "0.8.3",
+  "claudeCode": "2.1.282",
+  "date": "2026-09-26"
+}
