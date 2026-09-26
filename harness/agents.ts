@@ -5,7 +5,7 @@
  * Both stream JSON events; each run's stream is kept under results/raw.
  */
 import { spawn } from "node:child_process";
-import { appendFileSync, copyFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, copyFileSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -17,6 +17,14 @@ export interface AgentSpec {
   label: string;
   harness: Harness;
   model: string;
+  /** Standing instructions for the agent: AGENTS.md in CODEX_HOME, or Claude's appended system prompt. */
+  guide?: string;
+  /** Codex reasoning effort (default "medium"). */
+  effort?: string;
+  /** Codex features to turn on, e.g. code_mode. */
+  features?: string[];
+  /** More cua-driver tools to hide from the agent, on top of DRIVER_DENY. */
+  deny?: string[];
 }
 
 export interface Usage {
@@ -60,6 +68,7 @@ export async function runAgent(spec: AgentSpec, tools: ToolSet, prompt: string, 
     child.kill("SIGTERM");
     setTimeout(() => child.kill("SIGKILL"), 5000).unref();
   }, timeoutMs);
+  const t0 = Date.now();
   let buf = "";
   let err = "";
   const take = spec.harness === "claude" ? takeClaude : takeCodex;
@@ -70,7 +79,8 @@ export async function runAgent(spec: AgentSpec, tools: ToolSet, prompt: string, 
       const line = buf.slice(0, nl);
       buf = buf.slice(nl + 1);
       if (!line.trim()) continue;
-      appendFileSync(streamPath, `${line}\n`);
+      // Each event keeps when it arrived (ms from the start), so a run's time can be split into model and tool time.
+      appendFileSync(streamPath, line.startsWith("{") ? `{"_ms":${Date.now() - t0},${line.slice(1)}\n` : `${line}\n`);
       take(r, line);
     }
   });
@@ -98,6 +108,7 @@ function claudeCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: st
     "--no-session-persistence",
     // No user or project settings: no CLAUDE.md, hooks or plugins of whoever runs the bench.
     "--setting-sources", "",
+    ...(spec.guide ? ["--append-system-prompt", spec.guide] : []),
   ];
   // Nothing of a Claude Code session running the bench (its effort level, session, sockets) leaks in.
   const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(CLAUDECODE|CLAUDE_CODE_|CLAUDE_EFFORT|CLAUDE_PID)/.test(k)));
@@ -116,7 +127,7 @@ function codexCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: str
       'sandbox_mode = "read-only"',
       'approval_policy = "never"',
       'web_search = "disabled"',
-      'model_reasoning_effort = "medium"',
+      `model_reasoning_effort = ${JSON.stringify(spec.effort ?? "medium")}`,
       "",
       `[mcp_servers.${tools}]`,
       `command = ${JSON.stringify(s.command)}`,
@@ -124,13 +135,17 @@ function codexCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: str
       "startup_timeout_sec = 60",
       "tool_timeout_sec = 3600",
       'default_tools_approval_mode = "approve"',
-      ...(tools === "cua-driver" ? [`disabled_tools = ${JSON.stringify(DRIVER_DENY)}`] : []),
+      ...(tools === "cua-driver" ? [`disabled_tools = ${JSON.stringify([...DRIVER_DENY, ...(spec.deny ?? [])])}`] : []),
       "",
       "[features]",
       ...["shell_tool", "unified_exec", "apps", "plugins", "computer_use", "browser_use", "in_app_browser", "image_generation", "multi_agent", "goals", "sleep_tool", "memories"].map((f) => `${f} = false`),
+      ...(spec.features ?? []).map((f) => `${f} = true`),
       "",
     ].join("\n"),
   );
+  // The home is reused between runs: a guide from an earlier variant must not linger.
+  if (spec.guide) writeFileSync(join(home, "AGENTS.md"), spec.guide);
+  else rmSync(join(home, "AGENTS.md"), { force: true });
   const argv = ["exec", "--skip-git-repo-check", "--json", "-m", spec.model, "--ephemeral", prompt];
   return { cmd: "codex", argv, env: { ...process.env, CODEX_HOME: home } };
 }
