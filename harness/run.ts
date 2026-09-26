@@ -54,6 +54,7 @@ const guide = opt("--guide") ? readFileSync(resolve(opt("--guide")!), "utf8") : 
 const effort = opt("--effort");
 const features = opt("--features")?.split(",");
 const deny = opt("--deny")?.split(",");
+if (!variant && (guide || effort || features || deny)) throw new Error("--guide, --effort, --features and --deny need --variant, or their runs would be recorded as the plain agent");
 const agents = AGENTS.filter((a) => !agentLabels || agentLabels.includes(a.label)).map((a) =>
   variant ? { ...a, label: `${a.label}+${variant}`, guide, effort, features, deny } : a,
 );
