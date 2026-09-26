@@ -1,0 +1,9 @@
+automated Chromes already running, not waited for: 48848, 66265
+[1/8] ledger-refund gpt-6-sol cua-driver rep 1: PASS claimed=success tools=17 90s $0.286
+[2/8] support-refund gpt-6-sol cua-driver rep 1: PASS claimed=success tools=42 146s $0.514
+[3/8] profile-tabs-save gpt-6-sol cua-driver rep 1: PASS claimed=success tools=55 177s $0.328
+[4/8] pr-reviewers gpt-6-sol cua-driver rep 1: PASS claimed=success tools=17 300s $0.258
+[5/8] ledger-refund gpt-6-sol cua-driver rep 2: PASS claimed=success tools=22 99s $0.266
+[6/8] support-refund gpt-6-sol cua-driver rep 2: PASS claimed=success tools=43 180s $0.487
+[7/8] profile-tabs-save gpt-6-sol cua-driver rep 2: FAIL claimed=success tools=111 191s $0.248
+[8/8] pr-reviewers gpt-6-sol cua-driver rep 2: PASS claimed=success tools=22 102s $0.369
