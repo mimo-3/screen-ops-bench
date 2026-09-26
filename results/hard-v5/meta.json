@@ -1,0 +1,14 @@
+{
+  "suite": "hard",
+  "reps": 1,
+  "tasks": 15,
+  "only": ["ledger-refund", "support-refund", "profile-tabs-save", "pr-reviewers", "logs-incident-link", "event-update", "checkout-country-reset", "contract-files", "stock-reorder", "payout-setup", "drive-cleanup", "project-delete-confirm", "vacation-responder", "roadmap-board", "studio-booking"],
+  "agents": ["opus-5.5", "gpt-6-astra", "gpt-6-sol", "gpt-6-luna"],
+  "tools": ["cua-jev", "cua-driver"],
+  "purpose": "cua-jev vs cua-driver on every Hard task used so far, after the speed changes (act `then` sequences, row button names in screenText, Space and arrow keys, typing straight into web fields that ignored an AXValue write). Every task had been looked at while improving cua-jev. Cost per run includes Jev (jevCostUsd, $0.042 per million input tokens).",
+  "notes": "Two runs were redone by the harness: checkout-country-reset gpt-6-sol cua-driver (2 windows after the run) and vacation-responder gpt-6-luna cua-driver (an automated Chrome started).",
+  "cuaJev": "6d773b3 (feat/weak-spots)",
+  "cuaDriver": "0.8.3",
+  "claudeCode": "2.1.282",
+  "date": "2026-09-26"
+}
