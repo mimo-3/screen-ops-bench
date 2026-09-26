@@ -102,7 +102,7 @@ function claudeCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: st
     "--mcp-config", config,
     "--strict-mcp-config",
     "--allowedTools", `mcp__${tools}`,
-    ...(tools === "cua-driver" ? ["--disallowedTools", ...DRIVER_DENY.map((t) => `mcp__cua-driver__${t}`)] : []),
+    ...(tools === "cua-driver" ? ["--disallowedTools", ...[...DRIVER_DENY, ...(spec.deny ?? [])].map((t) => `mcp__cua-driver__${t}`)] : []),
     "--output-format", "stream-json",
     "--verbose",
     "--no-session-persistence",
@@ -138,7 +138,9 @@ function codexCommand(spec: AgentSpec, tools: ToolSet, prompt: string, work: str
       ...(tools === "cua-driver" ? [`disabled_tools = ${JSON.stringify([...DRIVER_DENY, ...(spec.deny ?? [])])}`] : []),
       "",
       "[features]",
-      ...["shell_tool", "unified_exec", "apps", "plugins", "computer_use", "browser_use", "in_app_browser", "image_generation", "multi_agent", "goals", "sleep_tool", "memories"].map((f) => `${f} = false`),
+      ...["shell_tool", "unified_exec", "apps", "plugins", "computer_use", "browser_use", "in_app_browser", "image_generation", "multi_agent", "goals", "sleep_tool", "memories"]
+        .filter((f) => !spec.features?.includes(f))
+        .map((f) => `${f} = false`),
       ...(spec.features ?? []).map((f) => `${f} = true`),
       "",
     ].join("\n"),
